@@ -35,9 +35,15 @@
   copies or substantial portions of the Software.
 *********/
 
-#define IS_MASTER
+typedef struct data_struct
+{
+  long x;
+} data_struct;
+data_struct dataPayload;
 
-#ifdef IS_MASTER
+// #define IS_SENDER // COMMEN SET AS RECEIVER
+
+#ifdef IS_SENDER
 
 #include <esp_now.h>
 #include <WiFi.h>
@@ -47,13 +53,6 @@
 uint8_t broadcastAddress1[] = {0xAC, 0x67, 0xB2, 0x2C, 0xB7, 0x3C}; // 2
 uint8_t broadcastAddress2[] = {0xAC, 0x67, 0xB2, 0x2C, 0x80, 0xFC}; // 3
 // uint8_t broadcastAddress3[] = {0xAC, 0x67, 0xB2, 0x2C, 0x76, 0xE0}; // 4
-
-typedef struct test_struct
-{
-  long x;
-} test_struct;
-
-test_struct test;
 
 // callback when data is sent
 // void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
@@ -114,22 +113,18 @@ void setup()
 void loop()
 {
 
-  if (encoder->update())
-  {
-    test.x = encoder->encoder_pulses;
-    esp_err_t result = esp_now_send(0, (uint8_t *)&test, sizeof(test_struct));
-  };
-
-  // test.y = random(0, 20);
-
-  // if (result == ESP_OK)
+  // if (encoder->update())
   // {
-  //   Serial.println("Sent with success");
-  // }
-  // else
-  // {
-  //   Serial.println("Error sending the data");
-  // }
+  //   dataPayload.x = encoder->encoder_pulses;
+  //   esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
+  // };
+
+  float t = millis() / 1000.0f;
+  dataPayload.x = sinf(t * 0.1f) * 2000000000;
+  esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
+
+  Serial.print("data :: ");
+  Serial.println(dataPayload.x);
 
   delay(33);
 }
@@ -150,15 +145,12 @@ void loop()
 #include <esp_now.h>
 #include <WiFi.h>
 
-//Structure example to receive data
-//Must match the sender structure
-typedef struct test_struct
-{
-  long x;
-} test_struct;
+#include <PacketSerial.h>
+#define PACKET_SIZE 16
+PacketSerial_<COBS, 0, PACKET_SIZE> packetSerial;
 
 //Create a struct_message called myData
-test_struct myData;
+data_struct myData;
 
 //callback function that will be executed when data is received
 void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
@@ -171,12 +163,17 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
   // Serial.print("y: ");
   // Serial.println(myData.y);
   Serial.println();
+
+  packetSerial.send((uint8_t *)&myData, sizeof(data_struct));
 }
 
 void setup()
 {
   //Initialize Serial Monitor
   Serial.begin(115200);
+  Serial2.begin(115200);
+  packetSerial.begin(115200);
+  packetSerial.setStream(&Serial2);
 
   //Set device as a Wi-Fi Station
   WiFi.mode(WIFI_STA);
@@ -195,6 +192,11 @@ void setup()
 
 void loop()
 {
+  // if (millis() > 4000)
+  // {
+  //   packetSerial.send((uint8_t *)&myData, sizeof(data_struct));
+  //   delay(16);
+  // }
 }
 
 #endif
