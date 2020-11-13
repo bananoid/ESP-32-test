@@ -31,8 +31,8 @@ bool Encoder::update()
 
     // Serial.print("Encoder ");
     // Serial.println(encoder_pulses);
-    Serial.print("speed ");
-    Serial.println(speed);
+    // Serial.print("speed ");
+    // Serial.println(speed);
 
     encoder_changed = false;
     return true;
