@@ -12,7 +12,11 @@ public:
   bool encoder_changed = false;
   bool encoder_a = true;
   bool encoder_b = false;
-  float speed;
+  float deltaSpeed;
+  float speed = 1;
+  float acc = 0;
+  float accFiltered = 0;
+  float accSpeed = 1;
 
   Encoder();
   void begin();

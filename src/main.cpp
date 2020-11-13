@@ -34,8 +34,6 @@
   The above copyright notice and this permission notice shall be included in all
   copies or substantial portions of the Software.
 *********/
-#define LOG_LOCAL_LEVEL ESP_LOG_ERROR
-#include "esp_log.h"
 
 typedef struct data_struct
 {
@@ -78,7 +76,6 @@ void setup()
   encoder->begin();
 
   WiFi.mode(WIFI_STA);
-  esp_log_level_set("*", ESP_LOG_ERROR);
 
   if (esp_now_init() != ESP_OK)
   {
@@ -132,11 +129,11 @@ void loop()
   if (encoder->update())
   {
     dataPayload.x = encoder->encoder_pulses;
-    dataPayload.speed = encoder->speed;
+    dataPayload.speed = encoder->accSpeed;
     esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
 
-    // Serial.print("speed ");
-    // Serial.println(dataPayload.speed);
+    Serial.print("speed ");
+    Serial.println(dataPayload.speed);
   };
 
   // float t = millis() / 1000.0f;
