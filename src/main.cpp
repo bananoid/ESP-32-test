@@ -38,10 +38,12 @@
 typedef struct data_struct
 {
   long x;
+  bool reset;
+  float speed;
 } data_struct;
 data_struct dataPayload;
 
-// #define IS_SENDER // COMMEN SET AS RECEIVER
+#define IS_SENDER // COMMEN SET AS RECEIVER
 
 #ifdef IS_SENDER
 
@@ -113,20 +115,32 @@ void setup()
 void loop()
 {
 
-  // if (encoder->update())
-  // {
-  //   dataPayload.x = encoder->encoder_pulses;
-  //   esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
-  // };
+  if (millis() < 1000)
+  {
+    dataPayload.reset = true;
+    esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
+    return;
+  }
+  else
+  {
+    dataPayload.reset = false;
+  }
 
-  float t = millis() / 1000.0f;
-  dataPayload.x = sinf(t * 0.1f) * 2000000000;
-  esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
+  if (encoder->update())
+  {
+    dataPayload.x = encoder->encoder_pulses;
+    dataPayload.speed = encoder->speed;
+    esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
+  };
 
-  Serial.print("data :: ");
-  Serial.println(dataPayload.x);
+  // float t = millis() / 1000.0f;
+  // dataPayload.x = sinf(t * 0.1f) * 2000000000;
+  // esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
 
-  delay(33);
+  // Serial.print("data :: ");
+  // Serial.println(dataPayload.x);
+
+  delay(16);
 }
 
 #else
@@ -160,9 +174,9 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
   Serial.println(len);
   Serial.print("x: ");
   Serial.println(myData.x);
-  // Serial.print("y: ");
-  // Serial.println(myData.y);
-  Serial.println();
+  Serial.println(myData.speed);
+  Serial.println(myData.reset);
+  Serial.println("-------------");
 
   packetSerial.send((uint8_t *)&myData, sizeof(data_struct));
 }

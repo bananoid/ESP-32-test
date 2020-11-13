@@ -25,14 +25,14 @@ bool Encoder::update()
 
   if (encoder_changed)
   {
-    // encoder changed position, update current control state and reset pulses
-    // long delta_pulses = encoder_pulses - encoder_last_pulses;
-    // float delta = (float)delta_pulses / ENCODER_STEP_RESOLUTION;
+    long delta_pulses = encoder_pulses - encoder_last_pulses;
+    encoder_last_pulses = encoder_pulses;
+    speed = (float)delta_pulses / ENCODER_STEP_RESOLUTION;
 
     // Serial.print("Encoder ");
     // Serial.println(encoder_pulses);
-    // Serial.print("delta ");
-    // Serial.println(delta);
+    Serial.print("speed ");
+    Serial.println(speed);
 
     encoder_changed = false;
     return true;

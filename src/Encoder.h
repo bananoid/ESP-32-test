@@ -12,6 +12,7 @@ public:
   bool encoder_changed = false;
   bool encoder_a = true;
   bool encoder_b = false;
+  float speed;
 
   Encoder();
   void begin();
