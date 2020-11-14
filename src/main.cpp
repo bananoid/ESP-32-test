@@ -37,9 +37,9 @@
 
 typedef struct data_struct
 {
-  float acc;
-  bool reset;
-  float speed;
+  float acc = 0;
+  bool reset = false;
+  float speed = 1;
 } data_struct;
 data_struct dataPayload;
 
@@ -141,7 +141,9 @@ void loop()
   // esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
 
   // Serial.print("data :: ");
-  // Serial.println(dataPayload.x);
+  // Serial.println(dataPayload.acc);
+  // Serial.println(dataPayload.reset);
+  // Serial.println(dataPayload.speed);
 
   delay(16);
 }
@@ -176,7 +178,7 @@ void OnDataRecv(const uint8_t *mac, const uint8_t *incomingData, int len)
   Serial.print("Bytes received: ");
   Serial.println(len);
   Serial.print("x: ");
-  Serial.println(myData.x);
+  Serial.println(myData.acc);
   Serial.println(myData.speed);
   Serial.println(myData.reset);
   Serial.println("-------------");

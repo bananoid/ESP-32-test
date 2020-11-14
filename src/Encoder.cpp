@@ -50,7 +50,11 @@ bool Encoder::update()
     speed = -1;
   }
 
-  acc = pow((deltaSpeed * 20), 3) * 50.0;
+  // float sign = deltaSpeed > 0 ? 1 : -1;
+
+  acc = deltaSpeed * 20;
+  acc = acc * 50;
+  // acc = abs(acc) * sign;
   accFiltered += (acc - accFiltered) * 0.05;
   accSpeed = speed * 20 + accFiltered;
 
