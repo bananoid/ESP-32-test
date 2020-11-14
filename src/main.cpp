@@ -37,7 +37,7 @@
 
 typedef struct data_struct
 {
-  long x;
+  float acc;
   bool reset;
   float speed;
 } data_struct;
@@ -128,12 +128,12 @@ void loop()
 
   if (encoder->update())
   {
-    dataPayload.x = encoder->encoder_pulses;
+    dataPayload.acc = encoder->accFiltered;
     dataPayload.speed = encoder->accSpeed;
     esp_now_send(0, (uint8_t *)&dataPayload, sizeof(data_struct));
 
-    Serial.print("speed ");
-    Serial.println(dataPayload.speed);
+    // Serial.print("speed ");
+    // Serial.println(dataPayload.speed);
   };
 
   // float t = millis() / 1000.0f;
