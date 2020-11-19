@@ -43,7 +43,7 @@ typedef struct data_struct
 } data_struct;
 data_struct dataPayload;
 
-#define IS_SENDER // COMMEN SET AS RECEIVER
+// #define IS_SENDER // COMMEN SET AS RECEIVER
 
 #ifdef IS_SENDER
 
@@ -53,8 +53,8 @@ data_struct dataPayload;
 
 // REPLACE WITH YOUR ESP RECEIVER'S MAC ADDRESS
 uint8_t broadcastAddress1[] = {0xAC, 0x67, 0xB2, 0x2C, 0xB7, 0x3C}; // 2
-uint8_t broadcastAddress2[] = {0xAC, 0x67, 0xB2, 0x2C, 0x80, 0xFC}; // 3
-// uint8_t broadcastAddress3[] = {0xAC, 0x67, 0xB2, 0x2C, 0x76, 0xE0}; // 4
+// uint8_t broadcastAddress2[] = {0xAC, 0x67, 0xB2, 0x2C, 0x80, 0xFC}; // 3
+uint8_t broadcastAddress2[] = {0xAC, 0x67, 0xB2, 0x2C, 0x76, 0xE0}; // 4 AC:67:B2:2C:76:E0
 
 // callback when data is sent
 // void OnDataSent(const uint8_t *mac_addr, esp_now_send_status_t status)
@@ -216,6 +216,8 @@ void loop()
   //   packetSerial.send((uint8_t *)&myData, sizeof(data_struct));
   //   delay(16);
   // }
+
+  // Serial.println(WiFi.macAddress());
 }
 
 #endif
